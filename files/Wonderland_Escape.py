@@ -22,9 +22,9 @@ move_scene_y = 0
 mode = "fall"
 side = "r"
 checkpoints = 0
-objects_on = True
+objects_on = False
 game_paused = False
-coins_total_menu = 10000
+coins_total_menu = 0
 mouse_on_buy_change = [False, False]
 invincibility_timer = 0
 gravity_timer = 0
@@ -297,7 +297,7 @@ class Player(Object):
         Checks if the player can stick to wall to the right
         :return: True or False
         """
-        TF = any(self.MakeSelfRect().right == i.MakeRect(i.default).left and self.MakeSelfRect().bottom < i.MakeRect(i.default).bottom and self.MakeSelfRect().top > i.MakeRect(i.default).top for i in touch_objects + boxes + break_blocks)
+        TF = any(self.MakeSelfRect().right == i.MakeRect(i.default).left and self.MakeSelfRect().bottom < i.MakeRect(i.default).bottom and self.MakeSelfRect().top > i.MakeRect(i.default).top for i in touch_objects + boxes + break_blocks + mystery_boxes)
 
         # TF = False
         # for i in touch_objects:
@@ -310,7 +310,7 @@ class Player(Object):
         Checks if the player can stick to wall to the left
         :return: True or False
         """
-        TF = any(self.MakeSelfRect().left == i.MakeRect(i.default).right and self.MakeSelfRect().bottom < i.MakeRect(i.default).bottom and self.MakeSelfRect().top > i.MakeRect(i.default).top for i in touch_objects + boxes + break_blocks)
+        TF = any(self.MakeSelfRect().left == i.MakeRect(i.default).right and self.MakeSelfRect().bottom < i.MakeRect(i.default).bottom and self.MakeSelfRect().top > i.MakeRect(i.default).top for i in touch_objects + boxes + break_blocks + mystery_boxes)
 
         # TF = False
         # for i in touch_objects:
@@ -351,6 +351,9 @@ class Player(Object):
                             move_scene_x += 1
 
         for i in range(num):
+            for n in boxes:
+                if player_1.MakeSelfRect().right == n.MakeRect2("l") and player_1.MakeSelfRect().bottom > n.MakeRect2("t") and player_1.MakeSelfRect().top < n.MakeRect2("b"):
+                    print(1)
             if not self.ObjectRight(self.MakeSelfRect()):
                 # TF = any(player_1.MakeSelfRect().right == i.MakeRect2("l") and player_1.MakeSelfRect().bottom > i.MakeRect2("t") and player_1.MakeSelfRect().top < i.MakeRect2("b") for i in bricks)
 
@@ -1841,14 +1844,21 @@ class JumpPad(Object):
     Jump pad for higher jump
     """
 
-    def __init__(self, x_pos, y_pos, work = objects_on):
+    def __init__(self, x_pos, y_pos, work = objects_on, m = False):
         """
         Initializes all variables
         :param x_pos: position on x co-ordinates
         :param y_pos: position on y co-ordinates
         :param work: is it working or not
+        :param m: m
         """
-        super().__init__(x_pos, y_pos)
+        # super().__init__(x_pos, y_pos)
+
+        if not m:
+            super().__init__(x_pos, y_pos)
+        else:
+            self.x_position = x_pos
+            self.y_position = y_pos
 
         self.work = work
 
@@ -3153,6 +3163,7 @@ def start_play_not_changeable():
         original_snakes, original_mushrooms, original_horses, original_mummys, original_fruits, original_coins, \
         original_fly_plats, original_expand_plats, original_jump_pads, original_check_ps, original_spiked_balls, original_boxes
     global break_blocks, original_break_blocks, mystery_boxes, original_mystery_boxes, potions_1, original_potions_1, potions_2, original_potions_2
+    global player_pictures
     # global apples, bananas, cherries, coins_not_list
     # global find_find_mode
 
@@ -3185,6 +3196,11 @@ def start_play_not_changeable():
                 SkinProduct(1000, 200, virtual_stand_list[2], 1000, new_fl['Skins'].find()[0]['virtual'],
                             virtual_pictures, new_fl['Skins'].find()[0]['virtual_picked'])
             ]
+
+            for i in skins_products:
+                if i.picked:
+                    player_pictures = i.pictures
+
 
             boosts_products = [
                 BoostProduct(5,
@@ -3243,7 +3259,7 @@ def start_play_not_changeable():
                              70),
             ]
 
-            coins_total_menu = 10000
+            coins_total_menu = 0
 
 
     mushrooms = [
@@ -3693,8 +3709,8 @@ def start_play_not_changeable():
         OrangeThickPlat(133, 4),
 
         GoldThickPlat(143, 4),
-        GoldThickPlat(143, 6.5),
-        GoldThickPlat(140, 8.5),
+        GoldThickPlat(143, 7),
+        GoldThickPlat(140, 8),
 
         OrangeThickPlat(151, 4),
         OrangeThickPlat(152, 4),
@@ -4010,8 +4026,8 @@ def start_play_changeable():
     background_music.stop()
     background_music.play(-1)
 
-    for i in touch_objects + mystery_boxes:
-        i.MakeSides()
+    # for i in touch_objects + mystery_boxes:
+    #     i.MakeSides()
 
     timer.Start()
 
@@ -4073,6 +4089,11 @@ def start_play_changeable():
             expand_plats = []
             for x in new_fl['ExpandPlats'].find():
                 expand_plats.append(ExpandPlat(x['x_position'], x['y_position'], x['stop_i'], x['i'], x['work'], True))
+
+            jump_pads = []
+            for x in new_fl['JumpPads'].find():
+                jump_pads.append(JumpPad(x['x_position'], x['y_position'], x['work'], True))
+
 
             check_ps = []
             for x in new_fl['Checkpoints'].find():
@@ -4141,14 +4162,14 @@ def reset():
     global fall_jump
     death_sound.play()
     if checkpoints == 0:
-        # move_scene_x = 0
-        # move_scene_y = 0
-        # player_1.x_position = 123
-        # player_1.y_position = 532
-        move_scene_x = 12000
+        move_scene_x = 0
         move_scene_y = 0
-        player_1.x_position = 350
-        player_1.y_position = 550 - 1 - 300
+        player_1.x_position = 123
+        player_1.y_position = 532 - 1
+        # move_scene_x = 12000
+        # move_scene_y = 0
+        # player_1.x_position = 350
+        # player_1.y_position = 550 - 1 - 300
     if checkpoints == 1:
         move_scene_x = 4770
         move_scene_y = -288
@@ -4260,6 +4281,8 @@ def init_all():
     :return: Nothing
     """
     if not game_paused:
+        # for x in mystery_boxes + break_blocks + boxes:
+        #     x.MakeSides()
         for x in snakes:
             x.Move()
         for x in mushrooms:
@@ -4391,6 +4414,18 @@ def reset_database():
                 'y_position': x.y_position,
                 'stop_i': x.stop_i,
                 'i': x.i,
+                'work': x.work,
+            })
+
+
+
+        jump_pads = original_jump_pads
+
+        new_fl['JumpPads'].drop()
+        for x in jump_pads:
+            new_fl['JumpPads'].insert_one({
+                'x_position': x.x_position,
+                'y_position': x.y_position,
                 'work': x.work,
             })
 
@@ -4550,6 +4585,7 @@ while True:
                             'screen': 'level'
                         })
                     level = "level_1"
+                    reset_database()
                     start_play_changeable()
                 if buy_menu_rect.collidepoint(event.pos):
                     level = "buy_1"
@@ -4759,7 +4795,7 @@ while True:
                     for x in fruits:
                         new_fl['Fruits'].insert_one({
                             'x_position': x.x_position,
-                            'y_position': x.y_position,
+                            'y_position': x.original_y,
                             'Type': x.name
                         })
 
@@ -4767,7 +4803,7 @@ while True:
                     for x in coins:
                         new_fl['Coins'].insert_one({
                             'x_position': x.x_position,
-                            'y_position': x.y_position,
+                            'y_position': x.original_y,
                         })
 
                     new_fl['FlyPlats'].drop()
@@ -4790,6 +4826,15 @@ while True:
                             'y_position': x.y_position,
                             'stop_i': x.stop_i,
                             'i': x.i,
+                            'work': x.work,
+                        })
+
+
+                    new_fl['JumpPads'].drop()
+                    for x in jump_pads:
+                        new_fl['JumpPads'].insert_one({
+                            'x_position': x.x_position,
+                            'y_position': x.y_position,
                             'work': x.work,
                         })
 
