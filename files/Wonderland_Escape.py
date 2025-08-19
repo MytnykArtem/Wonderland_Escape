@@ -351,9 +351,9 @@ class Player(Object):
                             move_scene_x += 1
 
         for i in range(num):
-            for n in boxes:
-                if player_1.MakeSelfRect().right == n.MakeRect2("l") and player_1.MakeSelfRect().bottom > n.MakeRect2("t") and player_1.MakeSelfRect().top < n.MakeRect2("b"):
-                    print(1)
+            # for n in boxes:
+            #     if player_1.MakeSelfRect().right == n.MakeRect2("l") and player_1.MakeSelfRect().bottom > n.MakeRect2("t") and player_1.MakeSelfRect().top < n.MakeRect2("b"):
+            #         print(1)
             if not self.ObjectRight(self.MakeSelfRect()):
                 # TF = any(player_1.MakeSelfRect().right == i.MakeRect2("l") and player_1.MakeSelfRect().bottom > i.MakeRect2("t") and player_1.MakeSelfRect().top < i.MakeRect2("b") for i in bricks)
 
