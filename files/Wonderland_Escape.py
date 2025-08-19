@@ -3052,20 +3052,20 @@ def keys_pressed():
         jump_sound.play()
 
 
-    if keys[pygame.K_RIGHT]:
-        if object_down and find_find_mode != "wall":
-            if run_sound_play == 1:
-                run_sound_play = run_sound.play()
-            elif not run_sound_play.get_busy():
-                run_sound.play()
-    elif keys[pygame.K_LEFT]:
-        if object_down and find_find_mode != "wall":
-            if run_sound_play == 1:
-                run_sound_play = run_sound.play()
-            elif not run_sound_play.get_busy():
-                run_sound.play()
-    else:
-        run_sound.stop()
+    # if keys[pygame.K_RIGHT]:
+    #     if object_down and find_find_mode != "wall":
+    #         if run_sound_play == 1:
+    #             run_sound_play = run_sound.play()
+    #         elif not run_sound_play.get_busy():
+    #             run_sound.play()
+    # elif keys[pygame.K_LEFT]:
+    #     if object_down and find_find_mode != "wall":
+    #         if run_sound_play == 1:
+    #             run_sound_play = run_sound.play()
+    #         elif not run_sound_play.get_busy():
+    #             run_sound.play()
+    # else:
+    #     run_sound.stop()
 
 def find_mode():
     """
@@ -3283,7 +3283,7 @@ def start_play_not_changeable():
 
     horses = [
         # Horse(4, 2, 8),
-        Horse(155, 2, 157),
+        Horse(154, 2, 158),
     ]
 
     mummys = [
