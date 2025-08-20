@@ -3164,6 +3164,7 @@ def start_play_not_changeable():
         original_fly_plats, original_expand_plats, original_jump_pads, original_check_ps, original_spiked_balls, original_boxes
     global break_blocks, original_break_blocks, mystery_boxes, original_mystery_boxes, potions_1, original_potions_1, potions_2, original_potions_2
     global player_pictures
+    global best_score
     # global apples, bananas, cherries, coins_not_list
     # global find_find_mode
 
@@ -3229,6 +3230,8 @@ def start_play_not_changeable():
             ]
 
             coins_total_menu = new_fl['Coins'].find()[0]['coins']
+
+            best_score = new_fl['BestScore'].find()[0]['score']
         else:
             skins_products = [
                 SkinProduct(100, 200, mask_stand_list[2], 0, True, mask_pictures, True),
@@ -3260,6 +3263,8 @@ def start_play_not_changeable():
             ]
 
             coins_total_menu = 0
+
+            best_score = 0
 
 
     mushrooms = [
@@ -4552,6 +4557,11 @@ def write_buy_database():
         new_fl_3['Coins'].drop()
         new_fl_3['Coins'].insert_one({
             'coins': coins_total_menu
+        })
+
+        new_fl_3['BestScore'].drop()
+        new_fl_3['BestScore'].insert_one({
+            'score': best_score
         })
 
 
